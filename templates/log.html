@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Log Viewer</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            padding: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            transition: opacity 1s ease-in-out;
+            opacity: 1;
+        }
+        .alert.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary ">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <span class="navbar-brand">Log entries</span>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/about">About Project</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/references">References</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="alert" id="alertMessage" style="display: none;"></div>
+      <div class="container mt-5">
+      <table class="text-bg-secondary p-3">
+        <tr>
+          <th class="text-bg-dark p-3">Name</th>
+          <th class="text-bg-dark p-3">Date & Time</th>
+          <th class="text-bg-dark p-3">Action</th>
+        </tr>
+        {% for entry in log_content %}
+        <tr>
+          <td>{{ entry.name }}</td>
+          <td>{{ entry.datetime }}</td>
+          <td>{{ entry.action }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+      <div class="d-flex justify-content-center">
+        <div class="d-inline-flex ">
+            {% if page > 1 %}
+            <div class="my-3 mx-3">
+                <form action="/p" method="get">
+                    <input type="hidden" name="page" value="{{ page - 1 }}">
+                    <button type="submit" class="btn btn-primary">Read Prev</button>
+                </form>
+            </div>
+            {% endif %}
+        
+            {% if more_entries %}
+            <div class="my-3 mx-3">
+                <form action="/p" method="get">
+                    <input type="hidden" name="page" value="{{ page + 1 }}">
+                    <button type="submit" class="btn btn-primary">Read More</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <script>
+      function showAlert(person) {
+            console.log(person)
+            var alertElement = document.getElementById('alertMessage');
+            alertElement.textContent = `Number of "people": ${person}`;
+            alertElement.style.display = 'block';
+            setTimeout(function() {
+                alertElement.classList.add('fade-out');
+                setTimeout(function() {
+                    alertElement.style.display = 'none';
+                    alertElement.classList.remove('fade-out');
+                }, 1000);
+            }, 3000);
+        }
+ 
+        // Get the counts from Flask and display the alert message
+        var person= `{{person}}`;
+        showAlert(person);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
