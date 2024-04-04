@@ -88,5 +88,6 @@ def parse_log_file(log_file_path, page, page_size=20):
     return log_data, more_entries, read_previous
 
 if __name__ == '__main__':
-    app.run(debug=True)
-
+    #app.run(debug=True)
+    #i am editing this 
+    app.run(debug=True,host='0.0.0.0')
